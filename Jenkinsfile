@@ -47,7 +47,7 @@ pipeline {
 
                         // Exécuter le playbook Ansible pour installer et configurer Nginx via Docker
                         sh """
-                        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/workspace/Projet1/terraform/inventory.ini ~/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=~/.ssh/sshsenan.pem ansible_user=ubuntu"
+                        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/workspace/Projet1/terraform/inventory.ini ~/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=~/workspace/Projet1/sshsenan.pem ansible_user=ubuntu"
                         """
                     }
                 }
