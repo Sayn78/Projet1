@@ -47,7 +47,7 @@ pipeline {
 
                         // Exécuter le playbook Ansible pour installer et configurer Nginx via Docker
                         sh """
-                        ansible-playbook -i Projet1/www/inventory.ini Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=~/.ssh/sshsenan.pem ansible_user=ec2-user" --extra-vars "server_ip=${public_ip}"
+                        ansible-playbook -i Projet1/terraform/inventory.ini Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=~/.ssh/sshsenan.pem ansible_user=ubuntu" --extra-vars "server_ip=${public_ip}"
                         """
                     }
                 }
