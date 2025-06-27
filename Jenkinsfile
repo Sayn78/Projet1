@@ -36,6 +36,23 @@ pipeline {
             }
         }
 
+
+    
+        stage('Apply Ansible') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                    script {
+                        // Appliquer la configuration Ansible
+                        sh 'cd ~/workspace/Projet1/Ansible/ && ansible-playbook -i inventory.ini nginx_docker.yml'  // Appliquer la configuration Ansible
+                    }
+                }
+            }
+        }
+
+
+
+
+
         
     }
 }
