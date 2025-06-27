@@ -46,7 +46,7 @@
 
     - name: Copier le fichier index.html
       copy:
-        src: www/index.html
+        src: ~/workspace/Projet1/www/index.html
         dest: /usr/share/nginx/html/index.html
         mode: '0644'
 
