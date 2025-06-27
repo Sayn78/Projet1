@@ -8,7 +8,6 @@ data "aws_security_group" "existing_web_sg" {
     name   = "group-name"
     values = ["web_sg"]
   }
-
 }
 
 # Créer le groupe de sécurité uniquement s'il n'existe pas
@@ -40,17 +39,19 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
+# Utilisation du groupe de sécurité dans l'instance EC2
 resource "aws_instance" "web" {
   ami           = "ami-04ec97dc75ac850b1"
   instance_type = "t2.micro"
   key_name      = "sshsenan"
-  security_groups = [aws_security_group.web_sg[0].name]  # Utiliser le groupe de sécurité créé ou trouvé
+  security_groups = [aws_security_group.web_sg[0].name]  # Référence au groupe de sécurité créé ou existant
 
   tags = {
     Name = "web_server1"
   }
 }
 
+# Elastic IP associé à l'instance
 resource "aws_eip" "web_ip" {
   instance = aws_instance.web.id
 }
