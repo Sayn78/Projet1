@@ -62,7 +62,9 @@ pipeline {
                     def instance_ip = sh(script: "cd ~/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
                     
                     // Vérifier l'accès HTTP à Nginx via curl
-                    sh "curl -I http://${instance_ip}"
+                    sh '''
+                        curl -I http://${instance_ip}
+                    '''
                 }
             }
         }
