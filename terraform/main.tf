@@ -8,11 +8,12 @@ data "aws_security_group" "existing_web_sg" {
     name   = "group-name"
     values = ["web_sg"]
   }
+
 }
 
-# Créer le groupe de sécurité uniquement s'il n'existe pas
+# Si le groupe de sécurité n'existe pas, le créer
 resource "aws_security_group" "web_sg" {
-  count = length(data.aws_security_group.existing_web_sg.id) == 0 ? 1 : 0  # Créer le groupe de sécurité uniquement s'il n'existe pas
+  count = length(data.aws_security_group.existing_web_sg.id) == 0 ? 1 : 0  # Créer le groupe uniquement s'il n'existe pas
 
   name        = "web_sg"
   description = "Allow HTTP and SSH access"
@@ -39,12 +40,12 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# Utilisation du groupe de sécurité dans l'instance EC2
+# Référencer le groupe de sécurité existant ou créé
 resource "aws_instance" "web" {
   ami           = "ami-04ec97dc75ac850b1"
   instance_type = "t2.micro"
   key_name      = "sshsenan"
-  security_groups = [aws_security_group.web_sg[0].name]  # Référence au groupe de sécurité créé ou existant
+  security_groups = length(data.aws_security_group.existing_web_sg.id) > 0 ? [data.aws_security_group.existing_web_sg.name] : [aws_security_group.web_sg[0].name]  # Référence le groupe de sécurité existant ou créé
 
   tags = {
     Name = "web_server1"
