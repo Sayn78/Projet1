@@ -36,14 +36,6 @@ pipeline {
             }
         }
 
-        stage('Test Server') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
-                    script {
-                        sh 'curl http://<public-ip-de-ton-instance>'  // Exemple de test pour vérifier l'instance
-                    }
-                }
-            }
-        }
+        
     }
 }
