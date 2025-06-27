@@ -40,7 +40,7 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# Référencer le groupe de sécurité existant ou créé
+# Créer l'instance
 resource "aws_instance" "web" {
   ami           = "ami-04ec97dc75ac850b1"
   instance_type = "t2.micro"
@@ -68,6 +68,7 @@ EOT
   filename = "${path.module}/inventory.ini"
 }
 
+# Définir la sortie de l'IP publique
 output "public_ip" {
   value = aws_instance.web.public_ip
 }
