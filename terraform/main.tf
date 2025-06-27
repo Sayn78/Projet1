@@ -62,7 +62,7 @@ resource "aws_eip" "web_ip" {
 resource "local_file" "inventory_ini" {
   content = <<EOT
 [webservers]
-${aws_instance.web.public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/sshsenan.pem
+${aws_instance.web.public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/workspace/Projet1/sshsenan.pem
 EOT
 
   filename = "${path.module}/inventory.ini"
