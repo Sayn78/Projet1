@@ -18,8 +18,8 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     script {
                         // Se déplacer dans le répertoire Projet1/terraform
-                        sh 'cd ~/Projet1/terraform/ && ls -la'  // Vérifier que le répertoire terraform existe et lister les fichiers
-                        sh 'cd ~/Projet1/terraform/ && terraform init'  // Initialisation de Terraform
+                        sh 'cd ~/workspace/Projet1/terraform/ && ls -la'  // Vérifier que le répertoire terraform existe et lister les fichiers
+                        sh 'cd ~/workspace/Projet1/terraform/ && terraform init'  // Initialisation de Terraform
                     }
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     script {
                         // Appliquer la configuration Terraform
-                        sh 'cd ~/Projet1/terraform/ && terraform apply -auto-approve'  // Appliquer la configuration Terraform
+                        sh 'cd ~/workspace/Projet1/terraform/ && terraform apply -auto-approve'  // Appliquer la configuration Terraform
                     }
                 }
             }
