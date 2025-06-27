@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     // Vérifier l'accès HTTP à Nginx via curl
-                    sh 'curl -I http://<INSTANCE_PUBLIC_IP>'
+                    sh 'curl -I http://${instance_ip}'
                 }
             }
         }
