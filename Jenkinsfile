@@ -42,14 +42,27 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     script {
-                        // Appliquer la configuration Ansible
-                        sh 'cd ~/workspace/Projet1/Ansible/ && ansible-playbook -i inventory.ini nginx_docker.yml'  // Appliquer la configuration Ansible
+                        // Récupérer l'IP publique de l'instance EC2 déployée avec Terraform
+                        def public_ip = sh(script: "terraform output -raw public_ip", returnStdout: true).trim()
+
+                        // Exécuter le playbook Ansible pour installer et configurer Nginx via Docker
+                        sh """
+                        ansible-playbook -i Projet1/www/inventory.ini Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=~/.ssh/sshsenan.pem ansible_user=ec2-user" --extra-vars "server_ip=${public_ip}"
+                        """
                     }
                 }
             }
         }
 
-
+        
+        stage('Test Server') {
+            steps {
+                script {
+                    // Vérifier l'accès HTTP à Nginx via curl
+                    sh 'curl -I http://<INSTANCE_PUBLIC_IP>'
+                }
+            }
+        }
 
 
 
