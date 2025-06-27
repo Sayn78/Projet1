@@ -1,6 +1,6 @@
 ---
 - name: Installer NGINX via Docker
-  hosts: webserver
+  hosts: webservers
   become: true
 
   tasks:
