@@ -40,14 +40,8 @@ pipeline {
     
         stage('Apply Ansible') {
     steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
-            withCredentials([sshUserPrivateKey(credentialsId: 'ssh_key_id', keyFileVariable: 'SSH_PRIVATE_KEY')]) {  
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {              
                 script {
-                    // Créer un fichier temporaire pour la clé privée
-                    writeFile file: '/tmp/ssh_private_key.pem', text: "${SSH_PRIVATE_KEY}"
-
-                    // Assurer les bonnes permissions pour la clé privée
-                    sh 'chmod 600 /tmp/ssh_private_key.pem'
 
                     // Récupérer l'IP publique de l'instance EC2
                     def public_ip = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
@@ -55,17 +49,16 @@ pipeline {
                     // Créer le fichier inventory.ini dynamique basé sur l'IP publique
                     writeFile file: '/var/lib/jenkins/workspace/Projet1/terraform/inventory.ini', text: """
 [webservers]
-${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/tmp/ssh_private_key.pem
+${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/workspace/Projet1/sshsenan.pem
 """
 
                             // Exécuter le playbook Ansible pour installer et configurer NGINX
                             sh """
-                            ansible-playbook -i /var/lib/jenkins/workspace/Projet1/terraform/inventory.ini /var/lib/jenkins/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=/tmp/ssh_private_key.pem ansible_user=ubuntu"
+                            ansible-playbook -i /var/lib/jenkins/workspace/Projet1/terraform/inventory.ini /var/lib/jenkins/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=/var/lib/jenkins/workspace/Projet1/sshsenan.pem ansible_user=ubuntu"
                             """
                         }
                     }
                 }
-            }
         }
 
             
