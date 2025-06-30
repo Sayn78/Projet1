@@ -39,23 +39,28 @@ pipeline {
 
     
         stage('Apply Ansible') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh_key_id', keyFileVariable: 'SSH_PRIVATE_KEY')]) {  // Référence à la clé SSH ajoutée
-                        script {
-                            
-                            // Récupérer l'IP publique de l'instance EC2
-                            def public_ip = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
+    steps {
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+            withCredentials([sshUserPrivateKey(credentialsId: 'ssh_key_id', keyFileVariable: 'SSH_PRIVATE_KEY')]) {  
+                script {
+                    // Créer un fichier temporaire pour la clé privée
+                    writeFile file: '/tmp/ssh_private_key.pem', text: "${SSH_PRIVATE_KEY}"
 
-                            // Créer le fichier inventory.ini pour Ansible avec l'IP de l'instance EC2
-                            writeFile file: '/var/lib/jenkins/workspace/Projet1/terraform/inventory.ini', text: """
+                    // Assurer les bonnes permissions pour la clé privée
+                    sh 'chmod 600 /tmp/ssh_private_key.pem'
+
+                    // Récupérer l'IP publique de l'instance EC2
+                    def public_ip = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
+
+                    // Créer le fichier inventory.ini dynamique basé sur l'IP publique
+                    writeFile file: '/var/lib/jenkins/workspace/Projet1/terraform/inventory.ini', text: """
 [webservers]
-${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=${SSH_PRIVATE_KEY}
+${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/tmp/ssh_private_key.pem
 """
 
                             // Exécuter le playbook Ansible pour installer et configurer NGINX
                             sh """
-                            ansible-playbook -i /var/lib/jenkins/workspace/Projet1/terraform/inventory.ini /var/lib/jenkins/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=${SSH_PRIVATE_KEY} ansible_user=ubuntu"
+                            ansible-playbook -i /var/lib/jenkins/workspace/Projet1/terraform/inventory.ini /var/lib/jenkins/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=/tmp/ssh_private_key.pem ansible_user=ubuntu"
                             """
                         }
                     }
