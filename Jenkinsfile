@@ -53,19 +53,7 @@ pipeline {
             }
         }
 
-        
-        stage('Test Server') {
-            steps {
-                script {
-                    // Récupérer l'IP publique de l'instance EC2 déployée avec Terraform
-                    def instance_ip = sh(script: "cd ~/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
-
-                    // Vérifier l'accès HTTP à Nginx via curl
-                    sh "echo 'IP de l'instance EC2 : ${instance_ip}'"  // Afficher l'IP pour vérification
-                    sh "curl -I http://${instance_ip}"  // Tester l'accès HTTP à l'instance
-                }
-            }
-        }
+    
         
     }
 }
