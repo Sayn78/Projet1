@@ -58,31 +58,10 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=${SSH_PRIVATE_
                             ansible-playbook -i /var/lib/jenkins/workspace/Projet1/terraform/inventory.ini /var/lib/jenkins/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=${SSH_PRIVATE_KEY} ansible_user=ubuntu"
                             """
                         }
-                    }
                 }
             }
-        }
+        
 
-            
-        stage('Test Server') {
-            steps {
-                script {
-                    // Tester si NGINX est bien accessible sur l'instance EC2
-                    def instance_ip = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
-                    sh "curl -I http://${instance_ip}"
-                }
-            }
-        }
-
-
-    }
-    
-    post {
-        success {
-            echo 'Le serveur web NGINX a été déployé avec succès !'
-        }
-        failure {
-            echo 'Une erreur est survenue lors du déploiement du serveur web.'
-        }
+        
     }
 }
