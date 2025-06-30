@@ -49,6 +49,7 @@ pipeline {
                             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/workspace/Projet1/terraform/inventory.ini ~/workspace/Projet1/Ansible/nginx_docker.yml --extra-vars "ansible_ssh_private_key_file=${SSH_PRIVATE_KEY} ansible_user=ubuntu"
                             """
                         }
+                    }
                 }
             }
         
