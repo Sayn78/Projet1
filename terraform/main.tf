@@ -73,3 +73,13 @@ output "public_ip" {
   value = aws_instance.web.public_ip
 }
 
+# Output pour l'ID de l'instance EC2
+output "instance_id" {
+  value = aws_instance.web.id
+}
+
+# Output pour l'IP publique de l'instance EC2
+output "public_ip" {
+  value = aws_instance.web.public_ip
+}
+
