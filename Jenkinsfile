@@ -129,20 +129,7 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
             }
         }
         
-        stage('Security Scan - Snyk') {
-            steps {
-                script {
-                    // Se déplacer dans le répertoire racine du projet contenant package.json et package-lock.json
-                    sh 'cd /var/lib/jenkins/workspace/Projet1'  // Change avec le bon chemin si nécessaire
-                    
-                    // Installer Snyk si ce n'est pas encore fait
-                    sh 'npm install -g snyk'  // Si tu utilises npm
 
-                    // Scanner le projet pour des vulnérabilités
-                    sh 'snyk test'
-                }
-            }
-        }
 
         stage('Security Scan - Trivy') {
             steps {

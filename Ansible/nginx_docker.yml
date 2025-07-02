@@ -14,30 +14,8 @@
           - lsb-release
           - python3-pip
           - python3-docker
-          - nodejs
-          - npm
         state: present
         update_cache: true
-
-    - name: Créer un répertoire local pour npm
-      file:
-        path: /home/ubuntu/.npm-global
-        state: directory
-        mode: '0755'
-
-    - name: Configurer npm pour utiliser le répertoire local
-      become_user: ubuntu
-      shell: |
-        npm config set prefix '/home/ubuntu/.npm-global'
-        echo 'export PATH=/home/ubuntu/.npm-global/bin:$PATH' >> /home/ubuntu/.bashrc
-        source /home/ubuntu/.bashrc
-      args:
-        creates: /home/ubuntu/.npm-global/bin
-
-    - name: Installer Snyk via npm dans le répertoire local
-      become_user: ubuntu
-      shell: |
-        npm install -g snyk
 
 
     - name: Télécharger et enregistrer la clé GPG officielle de Docker
