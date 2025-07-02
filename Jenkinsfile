@@ -133,7 +133,7 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
             steps {
                 script {
                     // Installer Snyk si ce n'est pas encore fait
-                    sh 'sudo npm install -g snyk'  // Si tu utilises npm
+                    sh 'npm install -g snyk'  // Si tu utilises npm
                     // Scanner ton projet pour des vulnérabilités
                     sh 'snyk test'
                 }
