@@ -95,18 +95,21 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
         stage('Test NGINX Installation') {
             steps {
                 script {
-                    // Tester si NGINX fonctionne correctement sur l'instance
+                    // Récupérer l'IP publique de l'instance EC2
                     def public_ip = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw public_ip", returnStdout: true).trim()
-                    def nginx_status = sh(script: "ssh -i /var/lib/jenkins/workspace/Projet1/sshsenan.pem -o StrictHostKeyChecking=no ubuntu@${public_ip} 'systemctl is-active nginx'", returnStdout: true).trim()
 
-                    if (nginx_status != "active") {
-                        error "NGINX ne fonctionne pas correctement sur l'instance EC2."
+                    // Vérifier si le conteneur NGINX est en cours d'exécution sur l'instance EC2
+                    def docker_status = sh(script: "ssh -i /var/lib/jenkins/workspace/Projet1/sshsenan.pem -o StrictHostKeyChecking=no ubuntu@${public_ip} 'docker ps | grep nginx'", returnStdout: true).trim()
+
+                    if (docker_status == "") {
+                        error "Le conteneur NGINX n'est pas en cours d'exécution sur l'instance EC2."
                     } else {
-                        echo "NGINX fonctionne correctement sur l'instance EC2."
+                        echo "Le conteneur NGINX fonctionne correctement sur l'instance EC2."
                     }
                 }
             }
         }
+
 
 
 
