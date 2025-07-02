@@ -132,6 +132,8 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
         stage('Security Scan - Snyk') {
             steps {
                 script {
+                    // Se déplacer dans le répertoire contenant package.json
+                    sh 'cd'
                     // Installer Snyk si ce n'est pas encore fait
                     sh 'npm install -g snyk'  // Si tu utilises npm
                     // Scanner ton projet pour des vulnérabilités
@@ -139,6 +141,7 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
                 }
             }
         }
+
 
         stage('Security Scan - Trivy') {
             steps {
