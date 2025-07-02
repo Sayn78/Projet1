@@ -39,7 +39,8 @@ pipeline {
         stage('Test Terraform Apply') {
             steps {
                 script {
-
+                    // Vérifier que l'instance EC2 a bien été créée en vérifiant l'état de Terraform
+                    def instance_id = sh(script: "cd /var/lib/jenkins/workspace/Projet1/terraform && terraform output -raw instance_id", returnStdout: true).trim()
                     if (instance_id == "") {
                         error "L'instance EC2 n'a pas été créée ou n'est pas disponible."
                     } else {
