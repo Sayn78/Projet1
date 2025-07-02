@@ -124,12 +124,9 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
                 }
             }
         }
+    }
 
 
-
-
-
-    
     post {
         success {
             echo 'Le serveur web NGINX a été déployé avec succès !'
