@@ -134,9 +134,6 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
         stage('Security Scan - Trivy') {
             steps {
                 script {
-                    // Installer Trivy
-                    sh 'curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.19.2/trivy_0.19.2_Linux-64bit.deb -o trivy.deb'
-                    sh 'sudo dpkg -i trivy.deb'
                     // Scanner l'image Docker NGINX
                     sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:latest'
                 }
