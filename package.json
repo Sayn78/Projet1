@@ -4,7 +4,7 @@
   "description": "Mon projet Jenkins CI/CD avec npm",
   "scripts": {
     "lint": "eslint .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
     "test": "echo \"(à remplacer par votre outil de test, ex: ng test --watch=false --browsers=ChromeHeadless)\"",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
