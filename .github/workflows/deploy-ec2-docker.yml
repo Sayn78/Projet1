@@ -1,11 +1,11 @@
-name: Build et push Docker + Déploiement EC2
+cname: Build et push Docker + Déploiement EC2
 
 on:
   push:
     tags:
        - 'v*'
     branches:
-      - main
+      - dev
 
 jobs:
   build-and-deploy:
