@@ -2,6 +2,7 @@
   "name": "projet1",
   "version": "1.0.0",
   "description": "Mon projet Jenkins CI/CD avec npm",
+  "type": "module",
   "scripts": {
     "lint": "echo \"(à remplacer par votre linter comme eslint ou ng lint)\"",
     "format:check": "echo \"(à remplacer par prettier --check . ou similaire)\"",
@@ -10,5 +11,10 @@
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
   },
   "author": "Anthony Senan",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "eslint": "^9.30.1",
+    "prettier": "^3.6.2"
+  }
 }
