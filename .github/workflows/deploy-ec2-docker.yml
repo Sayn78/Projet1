@@ -9,6 +9,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/mon-site
+
     steps:
       - name: 📥 Cloner le dépôt
         uses: actions/checkout@v3
@@ -16,10 +19,19 @@ jobs:
       - name: 🐳 Connexion à Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: 🏷️ Générer les tags
+        id: meta
+        run: echo "commit_tag=v-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
       - name: 🔧 Construire et tagger l’image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mon-site:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/mon-site:latest
+          docker build -t $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }} .
+          docker tag $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }} $IMAGE_NAME:latest
+
+      - name: 📤 Pousser les images Docker
+        run: |
+          docker push $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }}
+          docker push $IMAGE_NAME:latest
 
       - name: 🚀 Déploiement sur EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -28,7 +40,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/mon-site:latest
+            docker pull $IMAGE_NAME:latest
             docker stop mon-site || true
             docker rm mon-site || true
-            docker run -d --name mon-site -p 80:80 ${{ secrets.DOCKER_USERNAME }}/mon-site:latest
+            docker run -d --name mon-site -p 80:80 $IMAGE_NAME:latest
+
+      - name: ✅ Valider le code HTML
+        uses: Cyb3r-Jak3/html5validator-action@v0.5.0
+        with:
+          root: "www"
+          css: true
