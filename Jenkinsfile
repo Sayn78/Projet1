@@ -12,6 +12,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Sayn78/Projet1.git'  // Remplace par l'URL de ton dépôt
             }
         }
+    }
       
     stages {
         stage('Check Vulnerabilities') {
@@ -21,6 +22,7 @@ pipeline {
                 sh 'npm audit fix || true'
             }
         }
+    }
 
     post {
         always {
