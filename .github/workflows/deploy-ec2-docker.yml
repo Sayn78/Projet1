@@ -19,7 +19,7 @@ jobs:
       - name: 📦 Exporter l’image Docker en tar
         run: docker save mon-site:latest -o mon-site.tar
 
-      - name: 📤 Copier l’image sur EC2
+      - name: 📤 Envoyer le tar sur EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -28,7 +28,7 @@ jobs:
           source: "mon-site.tar"
           target: "~/"
 
-      - name: 🚀 Charger et lancer le conteneur sur EC2
+      - name: 🚀 Charger l’image et redémarrer le conteneur sur EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
