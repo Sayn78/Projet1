@@ -14,15 +14,15 @@ pipeline {
         }
     }
       
-        stages {
-            stage('Check Vulnerabilities') {
-                steps {
-                    echo "🔍 npm audit"
-                    sh 'npm audit || true' // pour éviter l'échec en cas de vulnérabilité
-                    sh 'npm audit fix || true'
-                }
+
+        stage('Check Vulnerabilities') {
+            steps {
+                echo "🔍 npm audit"
+                sh 'npm audit || true' // pour éviter l'échec en cas de vulnérabilité
+                sh 'npm audit fix || true'
             }
-        }
+         }
+
 
     post {
         always {
