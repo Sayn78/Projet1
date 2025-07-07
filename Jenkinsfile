@@ -23,6 +23,14 @@ pipeline {
             }
          }
 
+        stage('Clean Install') {
+            steps {
+                echo "📦 Installation propre avec npm ci"
+                sh 'npm ci'
+            }
+        }
+
+
 
         
     }
