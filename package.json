@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Mon projet Jenkins CI/CD avec npm",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --ext .ts,.js",
     "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
     "test": "echo \"(à remplacer par votre outil de test, ex: ng test --watch=false --browsers=ChromeHeadless)\"",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
