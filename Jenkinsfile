@@ -128,53 +128,7 @@ ${public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenki
                 }
             }
         }
-        
-
-
-        stage('Security Scan - Trivy') {
-            steps {
-                script {
-                    // Scanner l'image Docker NGINX
-                    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL nginx:latest'
-                }
-            }
-        }
-
-        stage('Security Scan - TFLint') {
-            steps {
-                script {
-                    // Installer TFLint
-                    sh 'brew install tflint'  // Si tu utilises macOS, sinon adapte pour ton système
-                    // Lancer TFLint sur les fichiers Terraform
-                    sh 'tflint /var/lib/jenkins/workspace/Projet1/terraform'
-                }
-            }
-        }
-
-        stage('Security Test - OWASP ZAP') {
-            steps {
-                script {
-                    // Exécuter ZAP pour scanner l'application déployée
-                    sh 'docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t http://${instance_ip}'
-                }
-            }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+            
     }
 
 
