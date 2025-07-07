@@ -40,10 +40,11 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull $IMAGE_NAME:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mon-site:latest
             docker stop mon-site || true
             docker rm mon-site || true
-            docker run -d --name mon-site -p 80:80 $IMAGE_NAME:latest
+            docker run -d --name mon-site -p 80:80 ${{ secrets.DOCKER_USERNAME }}/mon-site:latest
+
 
       - name: ✅ Valider le code HTML
         uses: Cyb3r-Jak3/html5validator-action@v7.2.0
