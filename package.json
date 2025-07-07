@@ -4,17 +4,27 @@
   "description": "Mon projet Jenkins CI/CD avec npm",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "lint": "echo \"(à remplacer par votre linter comme eslint ou ng lint)\"",
     "format:check": "echo \"(à remplacer par prettier --check . ou similaire)\"",
+=======
+    "lint": "eslint . --ext .ts,.js",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+>>>>>>> 8b786fb46efd9c50c640f745fc3ac73465c3ac2e
     "test": "echo \"(à remplacer par votre outil de test, ex: ng test --watch=false --browsers=ChromeHeadless)\"",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
   },
   "author": "Anthony Senan",
+<<<<<<< HEAD
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "eslint": "^9.30.1",
     "prettier": "^3.6.2"
   }
+=======
+  "license": "MIT"
+>>>>>>> 8b786fb46efd9c50c640f745fc3ac73465c3ac2e
 }
