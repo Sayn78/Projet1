@@ -1,0 +1,41 @@
+name: Build et déploiement Docker sur EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Cloner le dépôt
+        uses: actions/checkout@v3
+
+      - name: 🐳 Construire l’image Docker
+        run: docker build -t mon-site:latest .
+
+      - name: 📦 Exporter l’image Docker en tar
+        run: docker save mon-site:latest -o mon-site.tar
+
+      - name: 📤 Copier l’image sur EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "mon-site.tar"
+          target: "~/"
+
+      - name: 🚀 Charger et lancer le conteneur sur EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker load -i mon-site.tar
+            docker stop mon-site || true
+            docker rm mon-site || true
+            docker run -d --name mon-site -p 80:80 mon-site:latest
