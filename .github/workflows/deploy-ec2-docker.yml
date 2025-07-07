@@ -2,6 +2,8 @@ name: Build et push Docker + Déploiement EC2
 
 on:
   push:
+    tags:
+       - 'v*'
     branches:
       - main
 
@@ -13,6 +15,11 @@ jobs:
       IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/mon-site
 
     steps:
+
+      - name: 🔢 Récupérer le tag Git
+        id: tag
+        run: echo "tag=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+
       - name: 📥 Cloner le dépôt
         uses: actions/checkout@v3
 
@@ -25,12 +32,12 @@ jobs:
 
       - name: 🔧 Construire et tagger l’image
         run: |
-          docker build -t $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }} .
-          docker tag $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }} $IMAGE_NAME:latest
+          docker build -t $IMAGE_NAME:${{ steps.tag.outputs.tag }} .
+          docker tag $IMAGE_NAME:${{ steps.tag.outputs.tag }} $IMAGE_NAME:latest
 
       - name: 📤 Pousser les images Docker
         run: |
-          docker push $IMAGE_NAME:${{ steps.meta.outputs.commit_tag }}
+          docker push $IMAGE_NAME:${{ steps.tag.outputs.tag }}
           docker push $IMAGE_NAME:latest
 
       - name: 🚀 Déploiement sur EC2
