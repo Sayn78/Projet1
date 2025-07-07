@@ -46,7 +46,7 @@ jobs:
             docker run -d --name mon-site -p 80:80 $IMAGE_NAME:latest
 
       - name: ✅ Valider le code HTML
-        uses: Cyb3r-Jak3/html5validator-action@v0.5.0
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
           root: "www"
           css: true
