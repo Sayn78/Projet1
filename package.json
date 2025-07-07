@@ -1,0 +1,14 @@
+{
+  "name": "projet1",
+  "version": "1.0.0",
+  "description": "Mon projet Jenkins CI/CD avec npm",
+  "scripts": {
+    "lint": "echo \"(à remplacer par votre linter comme eslint ou ng lint)\"",
+    "format:check": "echo \"(à remplacer par prettier --check . ou similaire)\"",
+    "test": "echo \"(à remplacer par votre outil de test, ex: ng test --watch=false --browsers=ChromeHeadless)\"",
+    "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
+    "sonar": "echo \"(à remplacer par sonar-scanner)\""
+  },
+  "author": "Anthony Senan",
+  "license": "MIT"
+}
