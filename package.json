@@ -2,6 +2,7 @@
   "name": "projet1",
   "version": "1.0.0",
   "description": "Mon projet Jenkins CI/CD avec npm",
+  "type": "module",
   "scripts": {
     "lint": "eslint . --ext .ts,.js",
     "format:check": "prettier --check .",
