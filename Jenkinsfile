@@ -30,6 +30,22 @@ pipeline {
             }
         }
 
+        
+        stage('Formating & Linting') {
+            steps {
+                echo "🎨 Vérification du formatage et du linting"
+
+                dir('Projet1') {
+                    // Vérifie le formatage avec prettier (optionnel)
+                    sh 'npm run format:check || true'
+
+                    // Lint du projet
+                    sh 'npm run lint'
+                }
+            }
+        }
+
+
 
 
         
