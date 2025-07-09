@@ -45,6 +45,16 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            steps {
+                dir('Projet1') {
+                    echo "🧪 Lancement des tests unitaires"
+                    sh 'npm run test'
+                }
+            }
+        }
+
+
 
 
 
