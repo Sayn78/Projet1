@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "format:check": "prettier --check \"**/*.{js,ts,json,html,css,md}\"",
     "format:fix": "prettier --write .",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
   },
