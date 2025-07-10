@@ -35,6 +35,16 @@ pipeline {
 
                     // Créer un tag local uniquement (pas de git push)
                     sh "git tag ${newTag}"
+
+                    withCredentials([string(credentialsId: 'GitHub', variable: 'GIT_TOKEN')]) {
+                        sh """
+                            git config user.email "jenkins@local"
+                            git config user.name "Jenkins"
+                            git remote set-url origin https://$GIT_TOKEN@github.com/Sayn78/Projet1.git
+                            git push origin ${newTag}
+                        """
+                    }
+
                 }
             }
         }
@@ -123,6 +133,13 @@ pipeline {
             }
         }
 
+        stage('Setup via Ansible') {
+            steps {
+                dir('Ansible') {
+                    sh "ansible-playbook -i $INVENTORY_FILE setup.yml --extra-vars \"docker_version=$DOCKER_TAG\""
+                }
+            }
+        }
 
         stage('Déploiement via Ansible') {
             steps {
