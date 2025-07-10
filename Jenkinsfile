@@ -19,34 +19,34 @@ pipeline {
             }
         }
 
-    stage('Versionning') {
-        steps {
-            script {
-                // Récupère le dernier tag Git (ex: v1.0.3)
-                def lastTag = sh(script: "git describe --tags --abbrev=0 || echo v1.0.0", returnStdout: true).trim()
-                echo "🔢 Dernier tag Git : ${lastTag}"
+        stage('Versionning') {
+            steps {
+                script {
+                    // Récupère le dernier tag Git (ex: v1.0.3)
+                    def lastTag = sh(script: "git describe --tags --abbrev=0 || echo v1.0.0", returnStdout: true).trim()
+                    echo "🔢 Dernier tag Git : ${lastTag}"
 
-                // Extraire et incrémenter le patch (ex: 1.0.3 → 1.0.4)
-                def parts = lastTag.replace("v", "").tokenize('.')
-                parts[2] = (parts[2].toInteger() + 1).toString()
-                def newTag = "v${parts[0]}.${parts[1]}.${parts[2]}"
-                echo "🚀 Nouveau tag Git : ${newTag}"
+                    // Extraire et incrémenter le patch (ex: 1.0.3 → 1.0.4)
+                    def parts = lastTag.replace("v", "").tokenize('.')
+                    parts[2] = (parts[2].toInteger() + 1).toString()
+                    def newTag = "v${parts[0]}.${parts[1]}.${parts[2]}"
+                    echo "🚀 Nouveau tag Git : ${newTag}"
 
-                // Enregistrer dans une variable d’environnement
-                env.DOCKER_TAG = newTag
+                    // Enregistrer dans une variable d’environnement
+                    env.DOCKER_TAG = newTag
 
-                // Créer le tag local et le pousser sur GitHub
-                withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                    sh """
-                    git config user.email "jenkins@local"
-                    git config user.name "Jenkins"
-                    git tag ${DOCKER_TAG}
-                    git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${DOCKER_TAG}
-                    """
+                    // Créer le tag local et le pousser sur GitHub
+                    withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                        sh """
+                        git config user.email "jenkins@local"
+                        git config user.name "Jenkins"
+                        git tag ${DOCKER_TAG}
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${DOCKER_TAG}
+                        """
+                    }
                 }
             }
         }
-    }
 
 
 
