@@ -1,12 +1,15 @@
 pipeline {
     agent any
 
+    def dockerTag = ""
+
+
     environment {
         AWS_DEFAULT_REGION = 'eu-west-3'  // Région AWS que tu utilises
         DOCKER_IMAGE = "sayn78300/mon-site"
         DOCKER_TAG = "1.0.0"
         INVENTORY_FILE = "inventory.ini"
-        KEY_PATH = "~/.ssh/sshsenan.pem"
+        KEY_PATH = "/var/lib/jenkins/.ssh/sshsenan.pem"
     }
 
     stages {
@@ -22,26 +25,22 @@ pipeline {
         stage('Versionning') {
             steps {
                 script {
-                    // Récupère le dernier tag Git (ex: v1.0.3)
-                    def lastTag = sh(script: "git describe --tags --abbrev=0 || echo v1.0.0", returnStdout: true).trim()
-                    echo "🔢 Dernier tag Git : ${lastTag}"
+                    def lastTag = sh(script: "git describe --tags --abbrev=0 || echo 0.0.0", returnStdout: true).trim()
+                    def parts = lastTag.tokenize('.')
+                    def major = parts[0].toInteger()
+                    def minor = parts[1].toInteger()
+                    def patch = parts[2].toInteger() + 1
+                    dockerTag = "${major}.${minor}.${patch}"
+                    echo "🚀 Nouvelle version : ${dockerTag}"
 
-                    // Extraire et incrémenter le patch (ex: 1.0.3 → 1.0.4)
-                    def parts = lastTag.replace("v", "").tokenize('.')
-                    parts[2] = (parts[2].toInteger() + 1).toString()
-                    def newTag = "v${parts[0]}.${parts[1]}.${parts[2]}"
-                    echo "🚀 Nouveau tag Git : ${newTag}"
-
-                    // Enregistrer dans une variable d’environnement
-                    env.DOCKER_TAG = newTag
 
                     // Créer le tag local et le pousser sur GitHub
                     withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                         sh """
                         git config user.email "jenkins@local"
                         git config user.name "Jenkins"
-                        git tag ${DOCKER_TAG}
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${DOCKER_TAG}
+                        git tag ${newTag}
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${dockerTag}
                         """
                     }
                 }
@@ -77,7 +76,8 @@ pipeline {
                         }
 
                         echo "🧾 Génération du fichier Ansible inventory.ini"
-                        def inventoryContent = "[webservers]\n${ip} ansible_user=ubuntu ansible_ssh_private_key_file=${env.KEY_PATH}\n"
+                        def keyPath = "/var/lib/jenkins/.ssh/sshsenan.pem"
+                        def inventoryContent = "[webservers]\n${ip} ansible_user=ubuntu ansible_ssh_private_key_file=${keyPath}\n"
                         writeFile file: INVENTORY_FILE, text: inventoryContent
                         echo "📌 inventory.ini généré :\n${inventoryContent}"
                     }
@@ -112,8 +112,8 @@ pipeline {
             steps {
                 dir('www') {
                     sh """
-                        docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
-                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE:latest
+                        docker build -t $DOCKER_IMAGE:${dockerTag} .
+                        docker tag $DOCKER_IMAGE:${dockerTag} $DOCKER_IMAGE:latest
                     """
                 }
             }
@@ -124,7 +124,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE:$DOCKER_TAG
+                        docker push $DOCKER_IMAGE:${dockerTag}
                         docker push $DOCKER_IMAGE:latest
                     """
                 }
@@ -135,7 +135,7 @@ pipeline {
         stage('Déploiement via Ansible') {
             steps {
                 dir('Ansible') {
-                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=$DOCKER_TAG\""
+                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=${dockerTag}\""
                 }
             }
         }
@@ -145,7 +145,7 @@ pipeline {
 
   post {
     success {
-      echo "✅ Déploiement réussi de $DOCKER_IMAGE:$DOCKER_TAG"
+      echo "✅ Déploiement réussi de $DOCKER_IMAGE:${dockerTag}"
     }
     failure {
       echo "❌ Échec du pipeline"
