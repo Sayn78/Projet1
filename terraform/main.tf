@@ -57,17 +57,6 @@ resource "aws_eip" "web_ip" {
   instance = aws_instance.web.id
 }
 
-
-# Générer le fichier inventory.ini avec les informations de l'instance EC2
-resource "local_file" "inventory_ini" {
-  content = <<EOT
-[webservers]
-${aws_instance.web.public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/workspace/Projet1/sshsenan.pem
-EOT
-
-  filename = "${path.module}/inventory.ini"
-}
-
 # Définir la sortie de l'IP publique
 output "public_ip" {
   value = aws_instance.web.public_ip
