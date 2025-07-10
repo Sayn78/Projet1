@@ -62,14 +62,10 @@ pipeline {
                 echo "🔍 npm audit"
                 sh 'npm audit || true' // pour éviter l'échec en cas de vulnérabilité
                 sh 'npm audit fix || true'
-            }
 
-            steps {
                 echo "📦 Installation propre avec npm ci"
                 sh 'npm ci'
-            }
-        
-            steps {
+
                 echo "🎨 Vérification du formatage et du linting"
 
                 dir('Projet1') {
@@ -79,9 +75,7 @@ pipeline {
                     // Lint du projet
                     sh 'npm run lint'
                 }
-            }
-        
-            steps {
+
                 dir('Projet1') {
                     echo "🧪 Lancement des tests unitaires"
                     sh 'npm run test'
