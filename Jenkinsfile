@@ -22,8 +22,8 @@ pipeline {
 
         stage('Terraform') {
             environment {
-                TERRAFORM_DIR = "${WORKSPACE}/Projet1/terraform"
-                INVENTORY_FILE = "${WORKSPACE}/Projet1/Ansible/inventory.ini"
+                TERRAFORM_DIR = "${WORKSPACE}/terraform"
+                INVENTORY_FILE = "${WORKSPACE}/Ansible/inventory.ini"
             }
 
             steps {
