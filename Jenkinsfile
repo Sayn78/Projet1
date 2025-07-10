@@ -36,7 +36,7 @@ pipeline {
                     // Créer un tag local uniquement (pas de git push)
                     sh "git tag ${newTag}"
 
-                    withCredentials([string(credentialsId: 'GitHub', variable: 'GIT_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'GIT_TOKEN', variable: 'GIT_TOKEN')]) {
                         sh """
                             git config user.email "jenkins@local"
                             git config user.name "Jenkins"
