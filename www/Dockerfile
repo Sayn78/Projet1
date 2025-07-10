@@ -2,6 +2,6 @@
 FROM nginx:alpine
 
 # Copie les fichiers du site dans le dossier servi par NGINX
-COPY www/index.html /usr/share/nginx/html/
+COPY index.html /usr/share/nginx/html/
 
 EXPOSE 80
