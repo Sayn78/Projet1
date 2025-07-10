@@ -1,10 +1,3 @@
-// Annuler la pipeline si c’est un commit Jenkins qui a déclenché le build
-// (reconnaissable par son auteur ou message de commit)
-def isJenkinsCommit() {
-  def commitMessage = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
-  return commitMessage.startsWith("🔁 Bump version")
-}
-
 pipeline {
     agent any
 
