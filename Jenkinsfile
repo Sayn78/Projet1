@@ -33,21 +33,28 @@ pipeline {
                     currentBuild.displayName = "v${newTag}"
                     currentBuild.description = "Déploiement de la version ${newTag}"
 
-                    // Créer un tag local uniquement (pas de git push)
-                    sh "git tag ${newTag}"
+                    // Vérifie si le tag existe déjà
+                    def tagExists = sh(script: "git tag --list ${newTag}", returnStdout: true).trim()
 
-                    withCredentials([string(credentialsId: 'GIT_TOKEN', variable: 'GIT_TOKEN')]) {
+                    if (tagExists) {
+                        echo "🔁 Le tag ${newTag} existe déjà, on ne le recrée pas."
+                    } else {
+                        echo "🏷️ Création du tag ${newTag}"
+
                         sh """
                             git config user.email "jenkins@local"
                             git config user.name "Jenkins"
-                            git remote set-url origin https://$GIT_TOKEN@github.com/Sayn78/Projet1.git
-                            git push origin ${newTag}
+                            git tag ${newTag}
                         """
-                    }
 
+                        withCredentials([string(credentialsId: 'GIT_TOKEN', variable: 'GIT_TOKEN')]) {
+                            sh "git push https://${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${newTag}"
+                        }
+                    }
                 }
             }
         }
+
 
 
 
