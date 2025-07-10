@@ -26,41 +26,35 @@ pipeline {
             }
         }
 
-        stage('Versionning') {
-            steps {
-                script {
-                def versionFile = 'version.txt'
+    stage('Versionning') {
+        steps {
+            script {
+                // Récupère le dernier tag Git (ex: v1.0.3)
+                def lastTag = sh(script: "git describe --tags --abbrev=0 || echo v1.0.0", returnStdout: true).trim()
+                echo "🔢 Dernier tag Git : ${lastTag}"
 
-                // Lire la version actuelle
-                def currentVersion = readFile(versionFile).trim()
-                echo "🔢 Version actuelle : ${currentVersion}"
-
-                // Incrémenter le patch (dernier chiffre)
-                def parts = currentVersion.tokenize('.')
+                // Extraire et incrémenter le patch (ex: 1.0.3 → 1.0.4)
+                def parts = lastTag.replace("v", "").tokenize('.')
                 parts[2] = (parts[2].toInteger() + 1).toString()
-                def newVersion = "${parts[0]}.${parts[1]}.${parts[2]}"
-                echo "🚀 Nouvelle version : ${newVersion}"
+                def newTag = "v${parts[0]}.${parts[1]}.${parts[2]}"
+                echo "🚀 Nouveau tag Git : ${newTag}"
 
-                // Mettre à jour l'environnement
-                env.DOCKER_TAG = newVersion
+                // Enregistrer dans une variable d’environnement
+                env.DOCKER_TAG = newTag
 
-                // Réécrire le fichier
-                writeFile file: versionFile, text: newVersion
-
-                // (optionnel) commiter le fichier version.txt mis à jour
+                // Créer le tag local et le pousser sur GitHub
                 withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                    sh '''
-                        git config user.email "jenkins@local"
-                        git config user.name "Jenkins"
-                        git add version.txt || true
-                        git commit -m "🔁 Bump version to ${DOCKER_TAG}" || true
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git main
-                    '''
-                }
-
+                    sh """
+                    git config user.email "jenkins@local"
+                    git config user.name "Jenkins"
+                    git tag ${DOCKER_TAG}
+                    git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${DOCKER_TAG}
+                    """
                 }
             }
         }
+    }
+
 
 
 
