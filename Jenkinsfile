@@ -41,13 +41,16 @@ pipeline {
                 writeFile file: versionFile, text: newVersion
 
                 // (optionnel) commiter le fichier version.txt mis à jour
-                sh '''
-                    git config user.email "jenkins@local"
-                    git config user.name "Jenkins"
-                    git add version.txt
-                    git commit -m "🔁 Bump version to ${DOCKER_TAG}"
-                    git push origin main || true
-                '''
+                withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                    sh '''
+                        git config user.email "jenkins@local"
+                        git config user.name "Jenkins"
+                        git add version.txt || true
+                        git commit -m "🔁 Bump version to ${DOCKER_TAG}" || true
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git main
+                    '''
+                }
+
                 }
             }
         }
