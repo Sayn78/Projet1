@@ -2,6 +2,9 @@
   hosts: webservers
   become: true
 
+  vars:
+    docker_version: "latest"  # Valeur par défaut, peut être surchargée
+
   tasks:
     - name: Arrêter l'ancien conteneur (s'il existe)
       docker_container:
@@ -13,7 +16,7 @@
     - name: Lancer le nouveau conteneur
       docker_container:
         name: mon-site
-        image: sayn78300/mon-site:1.0.0
+        image: "sayn78300/mon-site:{{ docker_version }}"
         state: started
         restart_policy: always
         ports:

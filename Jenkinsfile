@@ -138,10 +138,11 @@ pipeline {
         stage('Déploiement via Ansible') {
             steps {
                 dir('Ansible') {
-                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml"
+                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=$DOCKER_TAG\""
                 }
             }
         }
+
     }
 
 
