@@ -59,29 +59,26 @@ pipeline {
 
         stage('test') {
             steps {
-                echo "🔍 npm audit"
-                sh 'npm audit || true' // pour éviter l'échec en cas de vulnérabilité
-                sh 'npm audit fix || true'
+                dir('www') {
+                    script {
+                        echo "🔍 npm audit"
+                        sh 'npm audit || true' // évite l'échec en cas de vulnérabilité
+                        sh 'npm audit fix || true'
 
-                echo "📦 Installation propre avec npm ci"
-                sh 'npm ci'
+                        echo "📦 Installation propre avec npm ci"
+                        sh 'npm ci'
 
-                echo "🎨 Vérification du formatage et du linting"
+                        echo "🎨 Vérification du formatage et du linting"
+                        sh 'npm run format:check || true'
+                        sh 'npm run lint'
 
-                dir('Projet1') {
-                    // Vérifie le formatage avec prettier (optionnel)
-                    sh 'npm run format:check || true'
-
-                    // Lint du projet
-                    sh 'npm run lint'
-                }
-
-                dir('Projet1') {
-                    echo "🧪 Lancement des tests unitaires"
-                    sh 'npm run test'
+                        echo "🧪 Lancement des tests unitaires"
+                        sh 'npm run test'
+                    }
                 }
             }
         }
+
 
 
 
