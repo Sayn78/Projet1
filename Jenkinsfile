@@ -103,8 +103,8 @@ pipeline {
             steps {
                 dir('www') {
                     sh """
-                        docker build -t $DOCKER_IMAGE:$$DOCKER_TAG .
-                        docker tag $DOCKER_IMAGE:$$DOCKER_TAG $DOCKER_IMAGE:latest
+                        docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE:latest
                     """
                 }
             }
@@ -115,7 +115,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE:$$DOCKER_TAG
+                        docker push $DOCKER_IMAGE:$DOCKER_TAG
                         docker push $DOCKER_IMAGE:latest
                     """
                 }
@@ -126,7 +126,7 @@ pipeline {
         stage('Déploiement via Ansible') {
             steps {
                 dir('Ansible') {
-                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=$$DOCKER_TAG\""
+                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=$DOCKER_TAG\""
                 }
             }
         }
@@ -136,7 +136,7 @@ pipeline {
 
   post {
     success {
-      echo "✅ Déploiement réussi de $DOCKER_IMAGE:$$DOCKER_TAG"
+      echo "✅ Déploiement réussi de $DOCKER_IMAGE:$DOCKER_TAG"
     }
     failure {
       echo "❌ Échec du pipeline"
