@@ -3,35 +3,72 @@ pipeline {
 
     environment {
         AWS_DEFAULT_REGION = 'eu-west-3'  // Région AWS que tu utilises
+        DOCKER_IMAGE = "sayn78300/mon-site"
+        DOCKER_TAG = "1.0.0"
+        INVENTORY_FILE = "Ansible/inventory.ini"
+        KEY_PATH = "~/.ssh/sshsenan.pem"
     }
 
     stages {
+
+
         stage('Checkout Code') {
             steps {
                 // Cloner le dépôt GitHub dans le répertoire de travail Jenkins
                 git branch: 'main', url: 'https://github.com/Sayn78/Projet1.git'  // Remplace par l'URL de ton dépôt
             }
         }
+
+
+        stage('Terraform') {
+            environment {
+                TERRAFORM_DIR = "${WORKSPACE}/Projet1/terraform"
+                INVENTORY_FILE = "${WORKSPACE}/Projet1/Ansible/inventory.ini"
+            }
+
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                    script {
+                        echo "📁 Listing du répertoire Terraform"
+                        sh "ls -la ${TERRAFORM_DIR}"
+
+                        echo "🚀 Initialisation de Terraform"
+                        sh "cd ${TERRAFORM_DIR} && terraform init"
+
+                        echo "📦 Application du plan Terraform"
+                        sh "cd ${TERRAFORM_DIR} && terraform apply -auto-approve"
+
+                        echo "🔎 Récupération de l'IP publique EC2"
+                        def ip = sh(script: "cd ${TERRAFORM_DIR} && terraform output -raw ip_public", returnStdout: true).trim()
+
+                        if (!ip || ip == "") {
+                        error "❌ IP publique non récupérée. EC2 peut ne pas être disponible."
+                        }
+
+                        echo "🧾 Génération du fichier Ansible inventory.ini"
+                        def inventoryContent = "[webservers]\n${ip} ansible_user=ubuntu ansible_ssh_private_key_file=${env.KEY_PATH}\n"
+                        writeFile file: INVENTORY_FILE, text: inventoryContent
+                        echo "📌 inventory.ini généré :\n${inventoryContent}"
+                    }
+                }
+            }
+        }
+
     
       
 
-        stage('Check Vulnerabilities') {
+        stage('test') {
             steps {
                 echo "🔍 npm audit"
                 sh 'npm audit || true' // pour éviter l'échec en cas de vulnérabilité
                 sh 'npm audit fix || true'
             }
-         }
 
-        stage('Clean Install') {
             steps {
                 echo "📦 Installation propre avec npm ci"
                 sh 'npm ci'
             }
-        }
-
         
-        stage('Formating & Linting') {
             steps {
                 echo "🎨 Vérification du formatage et du linting"
 
@@ -43,9 +80,7 @@ pipeline {
                     sh 'npm run lint'
                 }
             }
-        }
-
-        stage('Unit Tests') {
+        
             steps {
                 dir('Projet1') {
                     echo "🧪 Lancement des tests unitaires"
@@ -63,15 +98,13 @@ pipeline {
     }
 
 
-    post {
-        always {
-            echo '🏁 Pipeline finished'
-        }
-        failure {
-            echo '❌ Pipeline failed'
-        }
-        success {
-            echo '✅ Pipeline succeeded'
-        }
+  post {
+    success {
+      echo "✅ Déploiement réussi de $DOCKER_IMAGE:$DOCKER_TAG"
     }
+    failure {
+      echo "❌ Échec du pipeline"
+    }
+  }
+
 }
