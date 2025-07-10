@@ -5,7 +5,7 @@ pipeline {
         AWS_DEFAULT_REGION = 'eu-west-3'  // Région AWS que tu utilises
         DOCKER_IMAGE = "sayn78300/mon-site"
         DOCKER_TAG = "1.0.0"
-        INVENTORY_FILE = "Ansible/inventory.ini"
+        INVENTORY_FILE = "inventory.ini"
         KEY_PATH = "~/.ssh/sshsenan.pem"
     }
 
