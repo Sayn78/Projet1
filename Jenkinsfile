@@ -104,15 +104,6 @@ pipeline {
     }
 
 
-
-
-
-
-
-        
-    }
-
-
   post {
     success {
       echo "✅ Déploiement réussi de $DOCKER_IMAGE:$DOCKER_TAG"
