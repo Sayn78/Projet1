@@ -29,10 +29,12 @@ pipeline {
                     def newTag = "${major}.${minor}.${patch}"
                     echo "🚀 Nouvelle version : ${newTag}"
 
-                    // Sauvegarder dans une variable accessible globalement
-                    currentBuild.displayName = "v${newTag}"   // Pour lisibilité dans l'interface Jenkins
-                    currentBuild.description = "Déploiement de la version ${newTag}"
                     env.DOCKER_TAG = newTag
+                    currentBuild.displayName = "v${newTag}"
+                    currentBuild.description = "Déploiement de la version ${newTag}"
+
+                    // Créer un tag local uniquement (pas de git push)
+                    sh "git tag ${newTag}"
                 }
             }
         }
