@@ -19,6 +19,40 @@ pipeline {
             }
         }
 
+        stage('Versionning') {
+            steps {
+                script {
+                def versionFile = 'version.txt'
+
+                // Lire la version actuelle
+                def currentVersion = readFile(versionFile).trim()
+                echo "🔢 Version actuelle : ${currentVersion}"
+
+                // Incrémenter le patch (dernier chiffre)
+                def parts = currentVersion.tokenize('.')
+                parts[2] = (parts[2].toInteger() + 1).toString()
+                def newVersion = "${parts[0]}.${parts[1]}.${parts[2]}"
+                echo "🚀 Nouvelle version : ${newVersion}"
+
+                // Mettre à jour l'environnement
+                env.DOCKER_TAG = newVersion
+
+                // Réécrire le fichier
+                writeFile file: versionFile, text: newVersion
+
+                // (optionnel) commiter le fichier version.txt mis à jour
+                sh '''
+                    git config user.email "jenkins@local"
+                    git config user.name "Jenkins"
+                    git add version.txt
+                    git commit -m "🔁 Bump version to ${DOCKER_TAG}"
+                    git push origin main || true
+                '''
+                }
+            }
+        }
+
+
 
         stage('Terraform') {
             environment {
