@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    def dockerTag = ""
-
-
     environment {
         AWS_DEFAULT_REGION = 'eu-west-3'  // Région AWS que tu utilises
         DOCKER_IMAGE = "sayn78300/mon-site"
@@ -30,19 +27,13 @@ pipeline {
                     def major = parts[0].toInteger()
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger() + 1
-                    dockerTag = "${major}.${minor}.${patch}"
-                    echo "🚀 Nouvelle version : ${dockerTag}"
+                    def newTag = "${major}.${minor}.${patch}"
+                    echo "🚀 Nouvelle version : ${newTag}"
 
-
-                    // Créer le tag local et le pousser sur GitHub
-                    withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                        sh """
-                        git config user.email "jenkins@local"
-                        git config user.name "Jenkins"
-                        git tag ${newTag}
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${dockerTag}
-                        """
-                    }
+                    // Sauvegarder dans une variable accessible globalement
+                    currentBuild.displayName = "v${newTag}"   // Pour lisibilité dans l'interface Jenkins
+                    currentBuild.description = "Déploiement de la version ${newTag}"
+                    env.DOCKER_TAG = newTag
                 }
             }
         }
@@ -112,8 +103,8 @@ pipeline {
             steps {
                 dir('www') {
                     sh """
-                        docker build -t $DOCKER_IMAGE:${dockerTag} .
-                        docker tag $DOCKER_IMAGE:${dockerTag} $DOCKER_IMAGE:latest
+                        docker build -t $DOCKER_IMAGE:$$DOCKER_TAG .
+                        docker tag $DOCKER_IMAGE:$$DOCKER_TAG $DOCKER_IMAGE:latest
                     """
                 }
             }
@@ -124,7 +115,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE:${dockerTag}
+                        docker push $DOCKER_IMAGE:$$DOCKER_TAG
                         docker push $DOCKER_IMAGE:latest
                     """
                 }
@@ -135,7 +126,7 @@ pipeline {
         stage('Déploiement via Ansible') {
             steps {
                 dir('Ansible') {
-                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=${dockerTag}\""
+                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml --extra-vars \"docker_version=$$DOCKER_TAG\""
                 }
             }
         }
@@ -145,7 +136,7 @@ pipeline {
 
   post {
     success {
-      echo "✅ Déploiement réussi de $DOCKER_IMAGE:${dockerTag}"
+      echo "✅ Déploiement réussi de $DOCKER_IMAGE:$$DOCKER_TAG"
     }
     failure {
       echo "❌ Échec du pipeline"
