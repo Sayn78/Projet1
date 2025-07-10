@@ -54,9 +54,6 @@ pipeline {
             }
         }
 
-    
-      
-
         stage('test') {
             steps {
                 dir('www') {
@@ -78,6 +75,33 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Docker Build') {
+            steps {
+                dir('www') {
+                    sh "docker build -t $DOCKER_IMAGE:$DOCKER_TAG ."
+                    }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh "docker push $DOCKER_IMAGE:$DOCKER_TAG"
+                }
+            }
+        }
+
+        stage('Déploiement via Ansible') {
+            steps {
+                dir('Ansible') {
+                    sh "ansible-playbook -i $INVENTORY_FILE deploy.yml"
+                }
+            }
+        }
+    }
 
 
 
