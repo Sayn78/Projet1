@@ -39,7 +39,7 @@ pipeline {
                         sh "cd ${TERRAFORM_DIR} && terraform apply -auto-approve"
 
                         echo "🔎 Récupération de l'IP publique EC2"
-                        def ip = sh(script: "cd ${TERRAFORM_DIR} && terraform output -raw ip_public", returnStdout: true).trim()
+                        def ip = sh(script: "cd ${TERRAFORM_DIR} && terraform output -raw public_ip", returnStdout: true).trim()
 
                         if (!ip || ip == "") {
                         error "❌ IP publique non récupérée. EC2 peut ne pas être disponible."
