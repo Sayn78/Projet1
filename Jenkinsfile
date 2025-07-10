@@ -4,7 +4,6 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'eu-west-3'  // Région AWS que tu utilises
         DOCKER_IMAGE = "sayn78300/mon-site"
-        DOCKER_TAG = "1.0.0"
         INVENTORY_FILE = "inventory.ini"
         KEY_PATH = "/var/lib/jenkins/.ssh/sshsenan.pem"
     }
