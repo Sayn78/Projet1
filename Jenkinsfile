@@ -133,6 +133,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('www') {
+                    sh 'docker builder prune -af' // Supprime tout cache de build
                     sh """
                         docker build --no-cache --build-arg CACHEBUSTER=\$(date +%s) -t $DOCKER_IMAGE:$DOCKER_TAG .
                         docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE:latest
