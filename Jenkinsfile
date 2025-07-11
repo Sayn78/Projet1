@@ -120,6 +120,16 @@ pipeline {
         }
 
 
+        stage('Vérifier contenu du index.html') {
+            steps {
+                dir('www') {
+                    sh "cat index.html"
+                }
+            }
+        }
+
+
+
         stage('Docker Build') {
             steps {
                 dir('www') {
