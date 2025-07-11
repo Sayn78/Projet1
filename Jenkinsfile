@@ -138,9 +138,7 @@ pipeline {
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push $DOCKER_IMAGE:$DOCKER_TAG
                         docker push $DOCKER_IMAGE:latest
-                    ""https://jenkins.senan.fr/github-webhook/ (push)
-
-Last delivery was not successful. Invalid HTTP Response: 530. "
+                    """
                 }
             }
         }
