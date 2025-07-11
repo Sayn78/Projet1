@@ -1,7 +1,5 @@
-# Utilise l'image NGINX officielle
+# Dockerfile
 FROM nginx:alpine
-
-# Copie les fichiers du site dans le dossier servi par NGINX
-COPY ./index.html /usr/share/nginx/html/
-
+ARG CACHEBUSTER=1
+COPY ./index.html /usr/share/nginx/html/index.html
 EXPOSE 80
