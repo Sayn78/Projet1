@@ -25,35 +25,38 @@ pipeline {
                     def parts = lastTag.tokenize('.')
                     def major = parts[0].toInteger()
                     def minor = parts[1].toInteger()
-                    def patch = parts[2].toInteger() + 1
-                    def newTag = "${major}.${minor}.${patch}"
+                    def patch = parts[2].toInteger()
+
+                    def newTag = ""
+                    def tagExists = true
+
+                    // Boucle pour éviter conflit de tag
+                    while (tagExists) {
+                        patch += 1
+                        newTag = "${major}.${minor}.${patch}"
+                        def result = sh(script: "git tag --list ${newTag}", returnStdout: true).trim()
+                        tagExists = result != ""
+                    }
+
                     echo "🚀 Nouvelle version : ${newTag}"
 
                     env.DOCKER_TAG = newTag
                     currentBuild.displayName = "v${newTag}"
                     currentBuild.description = "Déploiement de la version ${newTag}"
 
-                    // Vérifie si le tag existe déjà
-                    def tagExists = sh(script: "git tag --list ${newTag}", returnStdout: true).trim()
+                    sh """
+                        git config user.email "jenkins@local"
+                        git config user.name "Jenkins"
+                        git tag ${newTag}
+                    """
 
-                    if (tagExists) {
-                        echo "🔁 Le tag ${newTag} existe déjà, on ne le recrée pas."
-                    } else {
-                        echo "🏷️ Création du tag ${newTag}"
-
-                        sh """
-                            git config user.email "jenkins@local"
-                            git config user.name "Jenkins"
-                            git tag ${newTag}
-                        """
-
-                        withCredentials([string(credentialsId: 'GIT_TOKEN', variable: 'GIT_TOKEN')]) {
-                            sh "git push https://${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${newTag}"
-                        }
+                    withCredentials([string(credentialsId: 'GIT_TOKEN', variable: 'GIT_TOKEN')]) {
+                        sh "git push https://${GIT_TOKEN}@github.com/Sayn78/Projet1.git ${newTag}"
                     }
                 }
             }
         }
+
 
 
 
@@ -135,7 +138,9 @@ pipeline {
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push $DOCKER_IMAGE:$DOCKER_TAG
                         docker push $DOCKER_IMAGE:latest
-                    """
+                    ""https://jenkins.senan.fr/github-webhook/ (push)
+
+Last delivery was not successful. Invalid HTTP Response: 530. "
                 }
             }
         }
