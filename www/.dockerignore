@@ -1,0 +1,22 @@
+# Ignorer les dossiers inutiles
+node_modules
+dist
+coverage
+__pycache__/
+
+# Ignorer Git
+.git
+.gitignore
+
+# Ignorer Jenkins et CI/CD
+.jenkins
+*.log
+
+# Ignorer les fichiers sensibles
+.env
+.env.*
+
+# Ignorer le Dockerfile et le fichier dockerignore eux-mêmes (optionnel)
+Dockerfile
+.dockerignore
+
