@@ -4,15 +4,17 @@
   "description": "Mon projet Jenkins CI/CD avec npm",
   "type": "module",
   "scripts": {
-    "lint": "eslint .",
-    "format:check": "prettier --check \"**/*.{js,ts,json,html,css,md}\"",
-    "format:fix": "prettier --write .",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "lint": "eslint --config configs/eslint.config.js tests/*.js",
+    "format:check": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --check \"tests/**/*.{js,json,md}\"",
+    "format:fix": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --write \"tests/**/*.{js,json,md}\"",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config=configs/jest.config.mjs tests",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
   },
+
   "author": "Anthony Senan",
   "license": "MIT",
+  
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "eslint": "^8.57.1",

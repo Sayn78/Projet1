@@ -99,7 +99,6 @@ pipeline {
 
         stage('test') {
             steps {
-                dir('www') {
                     script {
                         echo "🔍 npm audit"
                         sh 'npm audit || true' // évite l'échec en cas de vulnérabilité
@@ -115,7 +114,7 @@ pipeline {
                         echo "🧪 Lancement des tests unitaires"
                         sh 'npm run test'
                     }
-                }
+                
             }
         }
 

@@ -20,3 +20,12 @@ __pycache__/
 Dockerfile
 .dockerignore
 
+tests/
+configs/
+*.test.js
+.eslintrc.json
+*.config.js
+*.mjs
+*.json
+
+
