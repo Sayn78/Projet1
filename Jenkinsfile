@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE = "sayn78300/mon-site"
         INVENTORY_FILE = "inventory.ini"
         KEY_PATH = "/var/lib/jenkins/.ssh/sshsenan.pem"
+        SONAR_TOKEN = credentials('SONAR_TOKEN')
     }
 
     stages {
@@ -133,14 +134,15 @@ pipeline {
         }
 
 
-        stage('Analyse SonarCloud') {
+        stage('SonarCloud Analysis') {
             steps {
-                dir('Projet1') {
-                    withSonarQubeEnv('SonarCloud') {
-                        sh 'npm run test'
-                        sh 'npx sonar-scanner -Dproject.settings=sonar-project.properties'
-                    }
-                }
+                sh """
+                sonar-scanner \
+                    -Dsonar.projectKey=Sayn78_projet1 \
+                    -Dsonar.organization=Sayn78 \
+                    -Dsonar.host.url=https://sonarcloud.io \
+                    -Dsonar.login=$SONAR_TOKEN
+                """
             }
         }
 
