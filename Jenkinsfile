@@ -137,7 +137,7 @@ pipeline {
                     sh '''
                         sonar-scanner \
                         -Dsonar.projectKey=Sayn78_projet1 \
-                        -Dsonar.organization=Sayn78 \
+                        -Dsonar.organization=sayn78 \
                         -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=$TOKEN
                     '''
