@@ -13,8 +13,19 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                // Cloner le dépôt GitHub dans le répertoire de travail Jenkins
-                git branch: 'main', url: 'https://github.com/Sayn78/Projet1.git'  // Remplace par l'URL de ton dépôt
+                script {
+                            echo '🧹 Suppression de l’ancien contenu du workspace'
+                            deleteDir() // Nettoie tout le workspace
+
+                            echo '📥 Clonage du dépôt Git'
+                            git branch: 'main', url: 'https://github.com/Sayn78/Projet1.git'
+
+                            echo '📁 Contenu du répertoire cloné :'
+                            sh 'ls -la'
+
+                            echo '📄 Contenu de package.json :'
+                            sh 'cat package.json'
+                        }
             }
         }
 
