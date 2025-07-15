@@ -43,3 +43,30 @@ La pipeline Jenkins automatise :
 
 ## 📂 Arborescence du projet
 
+projet1/
+├── ansible/
+│ └── nginx_docker.yml
+├── terraform/
+│ └── main.tf
+├── tests/
+│ └── exemple.test.js
+├── www/
+│ └── index.html
+├── sonar-project.properties
+├── Jenkinsfile
+├── package.json
+└── README.md
+
+
+
+
+🌐 Accéder au site
+🖥️ Le site est déployé automatiquement sur une instance EC2 AWS.
+L'IP publique est affichée en fin de pipeline Jenkins après le déploiement.
+
+🤝 Auteur
+Anthony SENAN
+
+Passionné par l'automatisation, l'infrastructure et le DevOps.
+
+LinkedIn (ou à remplacer)
