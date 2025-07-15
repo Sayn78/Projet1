@@ -1,72 +1,58 @@
-# 🌐 Projet 1 - Déploiement Web Automatisé avec CI/CD
+# 🚀 Projet 1 – Déploiement Web automatisé avec CI/CD
 
-[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Sayn78_Projet1&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Sayn78_Projet1)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=Sayn78_Projet1)](https://sonarcloud.io/summary/new_code?id=Sayn78_Projet1)
+![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Sayn78_Projet1&metric=alert_status)
 
----
+## 🧾 Description
 
-## 📌 Présentation
+Ce projet met en place un pipeline CI/CD complet pour le déploiement automatisé d'un site HTML statique via une instance EC2 sur AWS.
 
-Ce projet montre la mise en place d'une **chaîne DevOps complète** pour déployer automatiquement un site web HTML sur un serveur AWS EC2 via :
+Il inclut :
 
 - Infrastructure as Code (Terraform)
-- Configuration Management (Ansible)
+- Provisionnement (Ansible)
 - Conteneurisation (Docker)
-- Intégration Continue (Jenkins)
+- Intégration continue (Jenkins)
 - Analyse de code (SonarCloud)
+- Tests unitaires (Jest)
 
 ---
 
-## 🚀 Stack Technique
+## 🛠️ Technologies utilisées
 
-| Outil         | Rôle                                       |
-|---------------|--------------------------------------------|
-| **Terraform** | Provisionnement de l'infrastructure AWS    |
-| **Ansible**   | Configuration de la machine (NGINX + Docker) |
-| **Docker**    | Conteneurisation du site HTML              |
-| **Jenkins**   | CI/CD automatisé (test, build, déploiement)|
-| **SonarCloud**| Analyse de code et qualité logicielle      |
-| **GitHub**    | Hébergement du code source                 |
-
----
-
-## 🔄 CI/CD
-
-La pipeline Jenkins automatise :
-
-1. 🧪 **Tests unitaires** (avec Jest)
-2. 🐳 **Build Docker**
-3. 🚀 **Déploiement via Ansible sur EC2**
-4. 🔍 **Analyse de code avec SonarCloud**
+| Outil         | Usage                                   |
+|--------------|------------------------------------------|
+| Terraform     | Création d'une VM EC2 AWS               |
+| Ansible       | Installation de Docker + déploiement    |
+| Jenkins       | CI/CD automatisé                        |
+| Docker        | Conteneurisation du serveur NGINX       |
+| Jest          | Tests unitaires JavaScript              |
+| SonarCloud    | Analyse de la qualité du code           |
+| GitHub        | Versioning et gestion du code source    |
 
 ---
 
-## 📂 Arborescence du projet
+## 🔄 Pipeline Jenkins
 
-projet1/
-├── ansible/
-│ └── nginx_docker.yml
-├── terraform/
-│ └── main.tf
-├── tests/
-│ └── exemple.test.js
-├── www/
-│ └── index.html
-├── sonar-project.properties
-├── Jenkinsfile
-├── package.json
-└── README.md
+1. **Terraform** : provisionne une instance EC2 AWS
+2. **Ansible** : installe Docker et déploie NGINX avec le site HTML
+3. **Tests Jest** : exécute les tests unitaires
+4. **SonarCloud** : exécute une analyse statique du code
+5. **Déploiement** : versionné via tags Git
 
+---
 
+## 📦 Scripts npm
 
+```bash
+npm install        # Installe les dépendances
+npm test           # Lance les tests avec Jest
+npm run sonar      # Lance une analyse SonarCloud via npx sonar-scanner
 
-🌐 Accéder au site
-🖥️ Le site est déployé automatiquement sur une instance EC2 AWS.
-L'IP publique est affichée en fin de pipeline Jenkins après le déploiement.
+```
 
-🤝 Auteur
-Anthony SENAN
+## 🤝 Auteurs
+Anthony Senan
+DevOps junior passionné, en formation continue sur les technologies cloud, l’automatisation et l’intégration continue.
 
-Passionné par l'automatisation, l'infrastructure et le DevOps.
-
-LinkedIn (ou à remplacer)
+## ✅ Objectif
+Mettre en œuvre une infrastructure DevOps professionnelle complète, versionnée, testée et analysée en continu.
