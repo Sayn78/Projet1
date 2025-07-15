@@ -1,5 +1,5 @@
 # Dockerfile
 FROM nginx:alpine
 ARG CACHEBUSTER=1
-COPY ./index.html /usr/share/nginx/html/index.html
+COPY . /usr/share/nginx/html/
 EXPOSE 80
