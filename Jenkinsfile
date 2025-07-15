@@ -138,7 +138,7 @@ pipeline {
                 dir('Projet1') {
                     withSonarQubeEnv('SonarCloud') {
                         sh 'npm run test'
-                        sh 'npx sonar-scanner'
+                        sh 'npx sonar-scanner -Dproject.settings=sonar-project.properties'
                     }
                 }
             }
