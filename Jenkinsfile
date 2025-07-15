@@ -14,9 +14,6 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-                            echo '🧹 Suppression de l’ancien contenu du workspace'
-                            deleteDir() // Nettoie tout le workspace
-
                             echo '📥 Clonage du dépôt Git'
                             git branch: 'main', url: 'https://github.com/Sayn78/Projet1.git'
 
