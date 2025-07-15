@@ -7,7 +7,7 @@
     "lint": "eslint tests/*.js",
     "format:check": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --check \"tests/**/*.{js,json,md}\"",
     "format:fix": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --write \"tests/**/*.{js,json,md}\"",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config=configs/jest.config.mjs tests",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config=configs/jest.config.mjs",
     "build": "echo \"(à remplacer par ng build --configuration=production ou npm run build)\"",
     "sonar": "echo \"(à remplacer par sonar-scanner)\""
   },
