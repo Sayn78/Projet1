@@ -126,14 +126,17 @@ pipeline {
             }
         }
 
-
-        stage('Vérifier contenu du index.html') {
+        stage('Analyse SonarCloud') {
             steps {
-                dir('www') {
-                    sh "cat index.html"
+                dir('Projet1') {
+                    withSonarQubeEnv('SonarCloud') {
+                        sh 'npm run test'
+                        sh 'npx sonar-scanner'
+                    }
                 }
             }
         }
+
 
 
 
