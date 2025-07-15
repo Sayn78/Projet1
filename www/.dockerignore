@@ -19,6 +19,7 @@ __pycache__/
 # Ignorer le Dockerfile et le fichier dockerignore eux-mêmes (optionnel)
 Dockerfile
 .dockerignore
+README.md
 
 tests/
 configs/
