@@ -129,6 +129,9 @@ pipeline {
 
 
         stage('SonarCloud Analysis') {
+            environment {
+                PATH = "/opt/sonar-scanner/bin:${env.PATH}"
+            }
             steps {
                 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'TOKEN')]) {
                     sh '''
