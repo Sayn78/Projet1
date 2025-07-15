@@ -4,7 +4,7 @@
   "description": "Mon projet Jenkins CI/CD avec npm",
   "type": "module",
   "scripts": {
-    "lint": "eslint tests/*.js",
+    "lint": "eslint tests/*.js --config configs/eslint.config.cjs",
     "format:check": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --check \"tests/**/*.{js,json,md}\"",
     "format:fix": "prettier --config configs/.prettierrc --ignore-path configs/.prettierignore --write \"tests/**/*.{js,json,md}\"",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config=configs/jest.config.mjs tests",

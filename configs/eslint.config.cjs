@@ -1,10 +1,10 @@
-import js from "@eslint/js";
-import pluginJest from "eslint-plugin-jest";
+const js = require("@eslint/js");
+const pluginJest = require("eslint-plugin-jest");
 
-export default [
+module.exports = [
   js.configs.recommended,
   {
-    ignores: ["node_modules", "dist"], // ✅ nouvelle façon d’ignorer des fichiers
+    ignores: ["node_modules", "dist"],
     files: ["**/*.js", "**/*.ts"],
     plugins: {
       jest: pluginJest
