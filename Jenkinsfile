@@ -127,22 +127,19 @@ pipeline {
             }
         }
 
-        stage('Debug Sonar') {
-            steps {
-                sh 'ls -la && cat sonar-project.properties'
-            }
-        }
-
 
         stage('SonarCloud Analysis') {
             steps {
-                sh """
-                sonar-scanner \
-                    -Dsonar.projectKey=Sayn78_projet1 \
-                    -Dsonar.organization=Sayn78 \
-                    -Dsonar.host.url=https://sonarcloud.io \
-                    -Dsonar.login=$SONAR_TOKEN
-                """
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'TOKEN')]) {
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=Sayn78_projet1 \
+                        -Dsonar.organization=Sayn78 \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=$TOKEN
+                    '''
+                }
+
             }
         }
 
