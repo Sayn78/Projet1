@@ -126,6 +126,13 @@ pipeline {
             }
         }
 
+        stage('Debug Sonar') {
+            steps {
+                sh 'ls -la && cat sonar-project.properties'
+            }
+        }
+
+
         stage('Analyse SonarCloud') {
             steps {
                 dir('Projet1') {
