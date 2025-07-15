@@ -1,6 +1,9 @@
 # 🚀 Projet 1 – Déploiement Web automatisé avec CI/CD
 
 ![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Sayn78_Projet1&metric=alert_status)
+![Build Jenkins](https://img.shields.io/badge/Jenkins-Build%20Passing-brightgreen?logo=jenkins&style=flat-square)
+![EC2 Public IP](https://img.shields.io/badge/EC2-IP--Publique--54.123.45.67-blue?style=flat-square&logo=amazonaws)
+
 
 ## 🧾 Description
 
